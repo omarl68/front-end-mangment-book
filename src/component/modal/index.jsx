@@ -61,6 +61,7 @@ function Index({ handleClose, openM, row }) {
             defaultValue={row.name}
           />
           <TextField
+            required
             style={{ margin: "1rem" }}
             id="outlined-number"
             label="Age"
@@ -79,6 +80,7 @@ function Index({ handleClose, openM, row }) {
           />
 
           <TextField
+            required
             style={{ margin: "1rem" }}
             id="outlined-password-input"
             label="Password"
