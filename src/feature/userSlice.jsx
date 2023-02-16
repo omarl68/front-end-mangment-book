@@ -33,8 +33,16 @@ export const addNewPost = createAsyncThunk(
     }
   }
 );
+export const login = createAsyncThunk("users/login", async (initialState) => {
+  try {
+    const response = await axios.post(`${UserUrl}/login`, initialState);
+    return response.data;
+  } catch (err) {
+    return err.message;
+  }
+});
 export const deletePost = createAsyncThunk(
-  "posts/deletePost",
+  "users/deleteUser",
   async (initialPost) => {
     const { id } = initialPost;
     try {
@@ -47,7 +55,7 @@ export const deletePost = createAsyncThunk(
   }
 );
 export const updatePost = createAsyncThunk(
-  "posts/updatePost",
+  "users/updateUser",
   async (initialState) => {
     const { id } = initialState;
     try {
@@ -62,18 +70,7 @@ export const updatePost = createAsyncThunk(
 const postsSlice = createSlice({
   name: "users",
   initialState,
-  reducers: {
-    /*reactionAdded(state, action) {
-      const { postId, reaction } = action.payload;
-      const existingPost = state.posts.find((post) => post.id === postId);
-      if (existingPost) {
-        existingPost.reactions[reaction]++;
-      }
-    },
-    increaseCount(state, action) {
-      state.count = state.count + 1;
-    }, */
-  },
+  reducers: {},
   extraReducers(builder) {
     builder
       .addCase(fetchUsers.pending, (state, action) => {
@@ -91,13 +88,19 @@ const postsSlice = createSlice({
         console.log(action.payload.data.user, "action payload data");
         state.users.push(action.payload.data.user);
       })
+      .addCase(login.fulfilled, (state, action) => {
+        console.log(action.payload.data);
+        localStorage.setItem("token", action.payload.data);
+      })
       .addCase(updatePost.fulfilled, (state, action) => {
         console.log(action.payload.data.user);
         // if (!action.payload?.id) {
         //   return;
         // }
         state.users = state.users.map((el) =>
-          el?._id === action.payload?.data?.user?._id ? {...action.payload.data.user} : el
+          el?._id === action.payload?.data?.user?._id
+            ? { ...action.payload.data.user }
+            : el
         );
         console.log(current(state));
       })

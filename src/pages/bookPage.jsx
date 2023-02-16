@@ -1,8 +1,9 @@
 import { Button, Container, Stack, Typography } from "@mui/material";
 import React, { useState } from "react";
 import Iconify from "../component/iconify";
-import TableUser from "../component/tableUser";
-import Modal from "../component/modalAddUser";
+import TableBook from "../component/tableBook";
+
+import Modal from "../component/modalAddBook";
 function UsersPage({title}) {
   const [openM, setOpenM] = useState(false);
   const handleOpen = () => setOpenM(true);
@@ -16,7 +17,7 @@ function UsersPage({title}) {
         mb={5}
       >
         <Typography variant="h4" gutterBottom>
-          {title}
+          Book
         </Typography>
         <Button
           variant="contained"
@@ -25,9 +26,9 @@ function UsersPage({title}) {
         >
           New {title}
         </Button>
-        {openM && <Modal handleClose={handleClose} openM={openM} title ="User" />}
+        {openM && <Modal handleClose={handleClose} openM={openM} title="Book" />}
       </Stack>
-      <TableUser />
+      <TableBook />
     </Container>
   );
 }

@@ -1,10 +1,6 @@
 import {
   Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
   Modal,
-  Select,
   TextField,
   Typography,
 } from "@mui/material";
@@ -14,9 +10,9 @@ import React, { useState } from "react";
 
 import SendIcon from "@mui/icons-material/Send";
 import { useDispatch } from "react-redux";
-import { addNewPost } from "../../feature/userSlice";
-function Index({ handleClose, openM ,title}) {
-
+import { addNewPost } from "../../feature/postsSlice";
+function Index({ handleClose, openM, title }) {
+ 
   const style = {
     position: "absolute",
     top: "50%",
@@ -41,42 +37,35 @@ function Index({ handleClose, openM ,title}) {
   // const Status = useSelector(getPostsStatus);
   const dispatch = useDispatch();
   const [name, setname] = useState();
-  const [age, setAge] = useState();
-  const [email, setemail] = useState();
-  const [password, setpassword] = useState();
-  const [Confirmpassword, setConfirmpassword] = useState();
-  const [Role, setRole] = useState();
+  const [author, setauthor] = useState();
+  const [page, setpage] = useState();
+  const [price, setprice] = useState();
 
   const onnameChange = (e) => setname(e.target.value);
-  const onAgeChange = (e) => setAge(e.target.value);
-  const onemailChange = (e) => setemail(e.target.value);
-  const onpasswordChange = (e) => setpassword(e.target.value);
-  const onConfirmpasswordChange = (e) => setConfirmpassword(e.target.value);
-  const onRoleChange = (e) => setRole(e.target.value);
+  const onauthorChange = (e) => setauthor(e.target.value);
+  const onpageChange = (e) => setpage(e.target.value);
+  const onpriceChange = (e) => setprice(e.target.value);
 
-  const canSave = [name, age, email, password, Confirmpassword].every(Boolean);
+  const canSave = [name, author, page, price].every(Boolean);
 
   const onSavePostClicked = () => {
     if (canSave) {
       try {
-        if (
-          name &&
-          age &&
-          email &&
-          password &&
-          Confirmpassword &&
-          password === Confirmpassword
-        ) {
-          console.log({ name, age, email, password, Confirmpassword, Role });
+        if (name && author && page && price) {
           dispatch(
-            addNewPost({ name, age, email, password, Confirmpassword, Role })
+            addNewPost({
+              name,
+              author,
+              page,
+              price,
+            })
           ).unwrap();
           setname("");
-          setAge("");
-          setemail("");
-          setpassword("");
-          setConfirmpassword("");
-          setRole("user");
+          setauthor("");
+          setpage("");
+          setprice("");
+
+          handleClose();
         }
       } catch (err) {
         console.log("fail");
@@ -98,7 +87,7 @@ function Index({ handleClose, openM ,title}) {
           sx={{ mb: 3, display: "flex", alignItems: "center", ml: 2 }}
         >
           <PersonAddAlt1Icon sx={{ mr: 1 }} />
-          Add {title}
+          Edit Book
         </Typography>
         <div style={styleForm}>
           <TextField
@@ -111,57 +100,30 @@ function Index({ handleClose, openM ,title}) {
           />
           <TextField
             style={{ margin: "1rem" }}
-            id="outlined-number"
-            label="Age"
-            type="number"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            InputProps={{ inputProps: { min: 3 } }}
-            value={age}
-            onChange={onAgeChange}
+            required
+            id="outlined-required"
+            label="author"
+            value={author}
+            onChange={onauthorChange}
           />
           <TextField
             style={{ margin: "1rem" }}
             required
             id="outlined-required"
-            label="Email"
-            value={email}
-            onChange={onemailChange}
+            label="page"
+            value={page}
+            onChange={onpageChange}
           />
 
           <TextField
             style={{ margin: "1rem" }}
-            id="outlined-password-input"
-            label="Password"
-            type="password"
+            id="outlined-price-input"
             required
-            autoComplete="current-password"
-            value={password}
-            onChange={onpasswordChange}
-          />
-          <FormControl sx={{ m: 2, minWidth: 270 }} size="small">
-            <InputLabel id="demo-select-small">Role</InputLabel>
-            <Select
-              labelId="demo-select-small"
-              id="demo-select-small"
-              label="Role"
-              value={Role}
-              onChange={onRoleChange}
-            >
-              <MenuItem value={10}>Admin</MenuItem>
-              <MenuItem value={20}>user</MenuItem>
-            </Select>
-          </FormControl>
-          <TextField
-            style={{ margin: "1rem" }}
-            id="outlined-password-input"
-            label="Confirm Password"
-            type="password"
-            required
-            autoComplete="current-password"
-            value={Confirmpassword}
-            onChange={onConfirmpasswordChange}
+            label="price"
+            type="price"
+            autoComplete="current-price"
+            value={price}
+            onChange={onpriceChange}
           />
         </div>
         <div

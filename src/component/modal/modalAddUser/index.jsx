@@ -16,7 +16,7 @@ import SendIcon from "@mui/icons-material/Send";
 import { useDispatch } from "react-redux";
 import { addNewPost } from "../../feature/userSlice";
 function Index({ handleClose, openM ,title}) {
-
+  console.log(title);
   const style = {
     position: "absolute",
     top: "50%",
