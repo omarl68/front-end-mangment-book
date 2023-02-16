@@ -2,6 +2,7 @@ import {
   createAsyncThunk,
   createSelector,
   createSlice,
+  current,
 } from "@reduxjs/toolkit";
 import axios from "axios";
 const UserUrl = "http://localhost:3000/user/";
@@ -15,7 +16,6 @@ const initialState = {
 export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
   try {
     const response = await axios.get(UserUrl);
-    console.log(response.data);
     return response.data;
   } catch (err) {
     return err.message;
@@ -39,7 +39,7 @@ export const deletePost = createAsyncThunk(
     const { id } = initialPost;
     try {
       const response = await axios.delete(`${UserUrl}/${id}`);
-      if (response?.status === 200) return initialPost;
+      if (response?.status === 204) return initialPost;
       return `${response?.status}: ${response?.statusText}`;
     } catch (err) {
       return err.message;
@@ -51,7 +51,7 @@ export const updatePost = createAsyncThunk(
   async (initialState) => {
     const { id } = initialState;
     try {
-      const response = await axios.put(`${UserUrl}/${id}`, initialState);
+      const response = await axios.patch(`${UserUrl}/${id}`, initialState);
       return response.data;
     } catch (err) {
       return initialState;
@@ -88,44 +88,31 @@ const postsSlice = createSlice({
         state.error = action.error.message;
       })
       .addCase(addNewPost.fulfilled, (state, action) => {
-        const sortedPosts = state.posts.sort((a, b) => {
-          if (a.id > b.id) return 1;
-          if (a.id < b.id) return -1;
-          return 0;
-        });
-        action.payload.id = sortedPosts[sortedPosts.length - 1].id + 1;
-        action.payload.userId = Number(action.payload.userId);
-        action.payload.date = new Date().toISOString();
-        action.payload.reactions = {
-          thumbsUp: 0,
-          wow: 0,
-          heart: 0,
-          rocket: 0,
-          coffee: 0,
-        };
-        console.log(action.payload);
-        state.posts.push(action.payload);
+        console.log(action.payload.data.user, "action payload data");
+        state.users.push(action.payload.data.user);
       })
       .addCase(updatePost.fulfilled, (state, action) => {
-        if (!action.payload?.id) {
-          return;
-        }
-        const { id } = action.payload;
-
-        action.payload.date = new Date().toISOString();
-        const posts = state.posts.filter((post) => post.id !== id);
-
-        state.posts = [...posts, action.payload];
+        console.log(action.payload.data.user);
+        // if (!action.payload?.id) {
+        //   return;
+        // }
+        state.users = state.users.map((el) =>
+          el?._id === action.payload?.data?.user?._id ? {...action.payload.data.user} : el
+        );
+        console.log(current(state));
       })
       .addCase(deletePost.fulfilled, (state, action) => {
-        if (!action.payload?.id) {
-          console.log("Delete could not complete");
-          console.log(action.payload);
-          return;
-        }
-        const { id } = action.payload;
-        const posts = state.posts.filter((post) => post.id !== id);
-        state.posts = posts;
+        console.log(action.payload, "testestest");
+
+        // if (!action.payload?.id) {
+        //   console.log("Delete could not complete");
+        //   console.log(action.payload);
+        //   return;
+        // }
+
+        state.users = state.users.filter(
+          (post) => post._id !== action.payload.id
+        );
       });
   },
 });

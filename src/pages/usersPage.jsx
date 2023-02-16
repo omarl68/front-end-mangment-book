@@ -1,8 +1,12 @@
 import { Button, Container, Stack, Typography } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import Iconify from "../component/iconify";
 import TableUser from "../component/tableUser";
-function usersPage() {
+import Modal from "../component/modalAddUser";
+function UsersPage() {
+  const [openM, setOpenM] = useState(false);
+  const handleOpen = () => setOpenM(true);
+  const handleClose = () => setOpenM(false);
   return (
     <Container>
       <Stack
@@ -17,13 +21,15 @@ function usersPage() {
         <Button
           variant="contained"
           startIcon={<Iconify icon="eva:plus-fill" />}
+          onClick={handleOpen}
         >
           New User
         </Button>
+        {openM && <Modal handleClose={handleClose} openM={openM} />}
       </Stack>
       <TableUser />
     </Container>
   );
 }
 
-export default usersPage;
+export default UsersPage;
